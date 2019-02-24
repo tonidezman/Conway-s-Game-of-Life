@@ -14,7 +14,7 @@ class Game
 
   def run
     (0..frames).each do
-      sleep 0.1
+      sleep 0.3
       system "clear"
       puts grid.display
       self.grid = grid.next_frame
@@ -28,18 +28,15 @@ class Grid
   attr_reader :rows, :cols
 
   def initialize(rows: 5, cols: 5)
-    @rows = rows
-    @cols = cols
-
+    @rows  = rows
+    @cols  = cols
     @board = Array.new(rows) { Array.new(cols, nil) }
     @board = populate_dead_cells(@board)
   end
 
   def next_frame
-
     self.board = inform_cells_about_its_neighbors(board)
     self.board = update_cells(board)
-
     return self
   end
 
@@ -141,8 +138,8 @@ class Cell
 
   def to_s
     case status
-    when :dead then ' '
-    when :live then 'x'
+    when :dead then '🤢 '
+    when :live then '😀 '
     end
   end
 end
