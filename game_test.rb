@@ -42,19 +42,61 @@ class GameTest < Minitest::Test
     assert_equal after, grid.next_frame.display
   end
 
-  def test_all_alone_cell_dies
+  def test_only_one_cell_survives
     grid = Grid.new(rows: 3, cols: 3)
+    grid.board[0][0].status = :live
+    grid.board[0][2].status = :live
     grid.board[1][1].status = :live
 
     before = ""
-    before << "| | | |\n"
+    before << "|x| |x|\n"
     before << "| |x| |\n"
     before << "| | | |\n"
 
     after = ""
+    after << "| |x| |\n"
+    after << "| |x| |\n"
     after << "| | | |\n"
+    assert_equal after, grid.next_frame.display
+  end
+
+  def test_every_one_dies_because_overpopulation
+    grid = Grid.new(rows: 3, cols: 3)
+    grid.board.each do |row|
+      row.each { |cell| cell.status = :live }
+    end
+
+    before = ""
+    before << "|x|x|x|\n"
+    before << "|x|x|x|\n"
+    before << "|x|x|x|\n"
+
+    after = ""
+    after << "|x| |x|\n"
     after << "| | | |\n"
-    after << "| | | |\n"
+    after << "|x| |x|\n"
+
+    assert_equal after, grid.next_frame.display
+  end
+
+  def test_random_live_cells_1
+    grid = Grid.new(rows: 3, cols: 3)
+    grid.board[0][1].status = :live
+    grid.board[1][0].status = :live
+    grid.board[1][1].status = :live
+    grid.board[1][2].status = :live
+    grid.board[2][1].status = :live
+
+    before = ""
+    before << "| |x| |\n"
+    before << "|x|x|x|\n"
+    before << "| |x| |\n"
+
+    after = ""
+    after << "|x|x|x|\n"
+    after << "|x| |x|\n"
+    after << "|x|x|x|\n"
+
     assert_equal after, grid.next_frame.display
   end
 

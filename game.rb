@@ -18,8 +18,10 @@ class Grid
   end
 
   def next_frame
+
     self.board = inform_cells_about_its_neighbors(board)
     self.board = update_cells(board)
+
     return self
   end
 
@@ -32,13 +34,16 @@ class Grid
   def inform_cells_about_its_neighbors(board)
     board.each.with_index do |row, i|
       row.each.with_index do |cell, j|
-
         neighbor_counter = 0
 
         # upper row neighbors
-        if board[i-1]
-          neighbor = board[i-1][j-1]
-          neighbor_counter += 1 if neighbor&.live?
+        row_is_inside_board = (i-1) >= 0
+        col_is_inside_board = (j-1) >= 0
+        if row_is_inside_board
+          if col_is_inside_board
+            neighbor = board[i-1][j-1]
+            neighbor_counter += 1 if neighbor&.live?
+          end
           neighbor = board[i-1][j]
           neighbor_counter += 1 if neighbor&.live?
           neighbor = board[i-1][j+1]
@@ -46,20 +51,26 @@ class Grid
         end
 
         # same row neighbors
-        neighbor = board[i][j-1]
-        neighbor_counter += 1 if neighbor&.live?
+        if col_is_inside_board
+          neighbor = board[i][j-1]
+          neighbor_counter += 1 if neighbor&.live?
+        end
         neighbor = board[i][j+1]
         neighbor_counter += 1 if neighbor&.live?
 
         # lower row neighbors
         if board[i+1]
-          neighbor = board[i+1][j-1]
-          neighbor_counter += 1 if neighbor&.live?
+          if col_is_inside_board
+            neighbor = board[i+1][j-1]
+            neighbor_counter += 1 if neighbor&.live?
+          end
           neighbor = board[i+1][j]
           neighbor_counter += 1 if neighbor&.live?
           neighbor = board[i+1][j+1]
           neighbor_counter += 1 if neighbor&.live?
         end
+
+        cell.neighbors = neighbor_counter
       end
     end
   end
@@ -83,8 +94,7 @@ class Grid
 end
 
 class Cell
-  attr_accessor :status
-  attr_reader :neighbors
+  attr_accessor :status, :neighbors
 
   def initialize(status: :dead, neighbors: 0)
     @status    = status
@@ -102,10 +112,12 @@ class Cell
   end
 
   def update
-    if neighbors < 2
+    if neighbors < 2 # starvation
       self.status = :dead
-    elsif neighbors == 3
+    elsif (neighbors == 3) && (status == :dead) # birth
       self.status = :live
+    elsif (neighbors > 3) && (status == :live) # overpopulation
+      self.status = :dead
     end
   end
 
