@@ -42,6 +42,43 @@ class GameTest < Minitest::Test
     assert_equal after, grid.next_frame.display
   end
 
+  def test_large_grid
+    grid = Grid.new(rows: 10, cols: 10)
+    grid.board[2][6].status = :live
+    grid.board[3][3].status = :live
+    grid.board[3][5].status = :live
+    grid.board[4][4].status = :live
+    grid.board[4][5].status = :live
+    grid.board[4][6].status = :live
+    grid.board[5][6].status = :live
+
+    before = ""
+    before << "| | | | | | | | | | |\n"
+    before << "| | | | | | | | | | |\n"
+    before << "| | | | | | |x| | | |\n"
+    before << "| | | |x| |x| | | | |\n"
+    before << "| | | | |x|x|x| | | |\n"
+    before << "| | | | | | |x| | | |\n"
+    before << "| | | | | | | | | | |\n"
+    before << "| | | | | | | | | | |\n"
+    before << "| | | | | | | | | | |\n"
+    before << "| | | | | | | | | | |\n"
+
+    after = ""
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | |x| |x| | | |\n"
+    after << "| | | | | | |x| | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+
+    assert_equal after, grid.next_frame.display
+  end
+
   def test_only_one_cell_survives
     grid = Grid.new(rows: 3, cols: 3)
     grid.board[0][0].status = :live
