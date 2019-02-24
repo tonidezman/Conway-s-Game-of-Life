@@ -6,6 +6,71 @@ require_relative 'game'
 
 class GameTest < Minitest::Test
 
+  def test_multiple_frames_all_dead_cells
+    grid = Grid.new(rows: 10, cols: 10)
+    game = Game.new(grid, frames: 2)
+    assert_equal grid.display, game.run
+  end
+
+  def test_multiple_frames_all_alive_cells
+    grid = Grid.new(rows: 10, cols: 10)
+    grid.board.flatten.each { |cell| cell.status = :live }
+
+    game = Game.new(grid, frames: 3)
+    all_dead_cells_in_grid = Grid.new(rows: 10, cols: 10)
+    assert_equal all_dead_cells_in_grid.display, game.run
+  end
+
+  def test_multiple_frames_all_alive_cells
+    grid = Grid.new(rows: 10, cols: 10)
+    grid.board[0][0].status = :live
+    grid.board[1][0].status = :live
+    grid.board[0][1].status = :live
+
+    game = Game.new(grid, frames: 3)
+    after = ""
+    after << "|x|x| | | | | | | | |\n"
+    after << "|x|x| | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+
+    assert_equal after, game.run
+  end
+
+  def test_multiple_frames_all_alive_cells
+    grid = Grid.new(rows: 10, cols: 10)
+    grid.board[1][1].status = :live
+    grid.board[3][1].status = :live
+    grid.board[4][2].status = :live
+    grid.board[4][3].status = :live
+    grid.board[4][4].status = :live
+    grid.board[4][5].status = :live
+    grid.board[3][5].status = :live
+    grid.board[2][5].status = :live
+    grid.board[1][4].status = :live
+
+    game = Game.new(grid, frames: 20)
+    after = ""
+    after << "| | | | | |x|x| | | |\n"
+    after << "| | | | | |x|x| | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+    after << "| | | | | | | | | | |\n"
+
+    assert_equal after, game.run
+  end
+
   def test_draw_grid_all_dead_cells
     grid = Grid.new(rows: 3, cols: 3)
     x = ""

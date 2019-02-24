@@ -3,7 +3,25 @@
 # live cell with > 3 neighbors  => dies
 # dead cell with == 3 neighbors => spawns
 
-require 'pry'
+class Game
+  attr_accessor :grid
+  attr_reader :frames
+
+  def initialize(grid, frames: 10)
+    @grid   = grid
+    @frames = frames
+  end
+
+  def run
+    (0..frames).each do
+      sleep 0.1
+      system "clear"
+      puts grid.display
+      self.grid = grid.next_frame
+    end
+    grid.display
+  end
+end
 
 class Grid
   attr_accessor :board
